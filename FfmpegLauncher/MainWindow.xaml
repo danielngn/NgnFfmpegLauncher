@@ -1,0 +1,53 @@
+﻿<Window x:Class="FfmpegLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FfmpegLauncher"
+        mc:Ignorable="d"
+        Title="FFMPEG Launcher" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance local:MainViewModel, IsDesignTimeCreatable=True}" 
+        Closing="Window_Closing" DataContextChanged="Window_DataContextChanged">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/FfmpegLauncher;component/Resources/DataTemplates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:TaskDataTemplateSelector x:Key="TaskDataTemplateSelector"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <Button Content="Add Convert Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddConvertCommand}"/>
+            <Button Content="Add Merge Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddMergeCommand}"/>
+            <Button Content="Remove Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveTaskCommand}"/>
+            <Button Content="Run All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RunAllCommand}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0">
+            <TextBlock Text="FFMPEG Folder:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=FfmpegFolder, UpdateSourceTrigger=PropertyChanged}" MinWidth="200" MaxWidth="350" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Bit Rate:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=DefaultBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Max Bit Rate:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=DefaultMaxBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+        </StackPanel>
+        <ListBox Grid.Row="2" Margin="5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
+                 HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                 SelectedItem="{Binding Path=SelectedTask}"/>
+        <DataGrid Grid.Row="3" Height="80" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Category" Width="Auto" Binding="{Binding Path=Category}"/>
+                <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Path=Message}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
