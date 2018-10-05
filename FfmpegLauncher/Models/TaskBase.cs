@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -181,16 +182,20 @@ namespace FfmpegLauncher.Models
                 OutputFileName = dialog.FileName;
         }
 
-        protected string BrowseInput()
+        protected string[] BrowseInput(bool isMultiFile)
         {
             var dialog = new Winform.OpenFileDialog()
             {
                 Title = "Select Input File Name",
                 Filter = "All files (*.*)|*.*|MP4 files|*.mp4|MOV files|*.mov"
             };
+            if (isMultiFile)
+            {
+                dialog.Multiselect = true;
+            }
             var result = dialog.ShowDialog();
             if (result == Winform.DialogResult.OK)
-                return dialog.FileName;
+                return dialog.FileNames;
 
             return null;
         }
@@ -212,14 +217,42 @@ namespace FfmpegLauncher.Models
             if (exitCode == 0)
             {
                 Status = TaskStatus.Succeeded;
-                LogInfo($"Task {TaskName} completed in {duation} seconds.");
+                LogInfo($"Task {TaskName} convert succeeded in {duation} seconds.");
             }
             else
             {
                 Status = TaskStatus.Failed;
-                LogInfo($"Task {TaskName} failed.");
+                LogError($"Task {TaskName} convert failed.");
             }
             StatusMessage = $"{Environment.NewLine}{duation} seconds";
+        }
+
+        protected void RunConvert(string inputFileName)
+        {
+            if (!File.Exists(inputFileName))
+            {
+                LogError($"Can't find file {inputFileName}, abort.");
+                return;
+            }
+            UiDispatcher.Invoke(new Action(() => Status = TaskStatus.Converting));
+            StringBuilder arg = new StringBuilder();
+            if (UseHardwareDecode)
+                arg.Append(" -hwaccel cuvid -c:v h264_cuvid ");
+            arg.Append($"-i \"{inputFileName}\" ");
+            if (UseHardwareEncode)
+                arg.Append(" -vcodec h264_nvenc ");
+            arg.Append($" -b:v {BitRate}M -maxrate:v {MaxBitRate}M ");
+            arg.Append($"\"{OutputFileName}\"");
+            LogInfo($"Task {TaskName} convert with arg:{arg.ToString()}");
+            Complete(RunFfmpeg(arg.ToString()));
+        }
+
+        protected int RunFfmpeg(string arg)
+        {
+            var psi = new ProcessStartInfo(FfmpegExec, arg) { WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = true, UseShellExecute = false };
+            var proc = Process.Start(psi);
+            proc.WaitForExit(60 * 60 * 1000);
+            return proc.ExitCode;
         }
     }
 

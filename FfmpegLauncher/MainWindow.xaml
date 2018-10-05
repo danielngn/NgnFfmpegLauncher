@@ -43,7 +43,7 @@
         <ListBox Grid.Row="2" Margin="5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                  SelectedItem="{Binding Path=SelectedTask}"/>
-        <DataGrid Grid.Row="3" Height="80" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None">
+        <DataGrid Grid.Row="3" Height="80" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Category" Width="Auto" Binding="{Binding Path=Category}"/>
                 <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Path=Message}"/>
