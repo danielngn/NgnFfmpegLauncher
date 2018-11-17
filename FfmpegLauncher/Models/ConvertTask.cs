@@ -29,7 +29,12 @@ namespace FfmpegLauncher.Models
             get
             {
                 if (_BrowseInputCommand == null)
-                    _BrowseInputCommand = new RelayCommand(x => InputFileName = BrowseInput(false).FirstOrDefault());
+                    _BrowseInputCommand = new RelayCommand(x =>
+                    {
+                        var file = BrowseInput(false);
+                        if (file != null)
+                            InputFileName = file.FirstOrDefault();
+                    });
                 return _BrowseInputCommand;
             }
         }

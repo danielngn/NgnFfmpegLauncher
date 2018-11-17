@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -14,10 +11,9 @@ namespace FfmpegLauncher.Models
 {
     public class TaskBase : NotifiableBase
     {
+        public static string FfmpegExec { get; set; }
         public event EventHandler<LogEventArgs> AddLog;
-        public string FfmpegFolder { get; set; }
         public Dispatcher UiDispatcher { get; set; }
-        protected string FfmpegExec => FfmpegFolder + "\\ffmpeg.exe";
         protected string TaskName { get; private set; }
         protected DateTime StartTime { get; private set; }
         protected DateTime EndTime { get; private set; }
