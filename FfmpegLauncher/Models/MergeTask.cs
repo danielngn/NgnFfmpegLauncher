@@ -11,6 +11,8 @@ namespace FfmpegLauncher.Models
 {
     public class MergeTask : TaskBase
     {
+        public MergeTask(ObservableCollection<string> outputFolders) : base(outputFolders) { }
+
         public ObservableCollection<string> FilesToMerge { get; } = new ObservableCollection<string>();
 
         private ICommand _AddFileCommand;

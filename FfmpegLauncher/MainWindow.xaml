@@ -30,6 +30,7 @@
             <Button Content="Add Convert Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddConvertCommand}"/>
             <Button Content="Add Merge Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddMergeCommand}"/>
             <Button Content="Remove Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveTaskCommand}"/>
+            <Button Content="Remove All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveAllCommand}"/>
             <Button Content="Run All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RunAllCommand}"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0">
@@ -39,6 +40,7 @@
             <TextBox Text="{Binding Path=DefaultBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
             <TextBlock Text="Max Bit Rate:" Margin="0,0,5,0" VerticalAlignment="Center"/>
             <TextBox Text="{Binding Path=DefaultMaxBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
+            <Button Content="Apply to All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=ApplyToAllCommand}"/>
         </StackPanel>
         <ListBox Grid.Row="2" Margin="5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"

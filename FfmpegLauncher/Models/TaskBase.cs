@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,6 +13,16 @@ namespace FfmpegLauncher.Models
 {
     public class TaskBase : NotifiableBase
     {
+        public TaskBase()
+        {
+
+        }
+
+        public TaskBase(ObservableCollection<string> outputFolders)
+        {
+            OutputFolders = outputFolders;
+        }
+
         public static string FfmpegExec { get; set; }
         public event EventHandler<LogEventArgs> AddLog;
         public Dispatcher UiDispatcher { get; set; }
@@ -32,7 +44,15 @@ namespace FfmpegLauncher.Models
             }
         }
 
-        public int BitRate { get; set; }
+        private int _bitRate;
+        public int BitRate {
+            get => _bitRate;
+            set
+            {
+                _bitRate = value;
+                NotifyPropertyChanged(nameof(BitRate));
+            }
+        }
 
         private int _maxBitRate;
         public int MaxBitRate
@@ -175,7 +195,20 @@ namespace FfmpegLauncher.Models
             };
             var result = dialog.ShowDialog();
             if (result == Winform.DialogResult.OK)
+            {
                 OutputFileName = dialog.FileName;
+                var file = new FileInfo(OutputFileName);
+                var dir = file.DirectoryName;
+                var existing = OutputFolders.FirstOrDefault(x => x.Equals(dir, StringComparison.OrdinalIgnoreCase));
+                if (existing == null)
+                {
+                    OutputFolders.Insert(0, dir);
+                }
+                else
+                {
+                    OutputFolders.Move(OutputFolders.IndexOf(existing), 0);
+                }
+            }
         }
 
         protected string[] BrowseInput(bool isMultiFile)
@@ -250,6 +283,8 @@ namespace FfmpegLauncher.Models
             proc.WaitForExit(60 * 60 * 1000);
             return proc.ExitCode;
         }
+
+        public ObservableCollection<string> OutputFolders { get; }
     }
 
     public class LogEventArgs : EventArgs

@@ -25,6 +25,8 @@ namespace FfmpegLauncher
 
         public ObservableCollection<TaskBase> Tasks { get; } = new ObservableCollection<TaskBase>();
 
+        public ObservableCollection<string> OutputFolders { get; } = new ObservableCollection<string>();
+
         private ICommand _AddConvertCommand;
         public ICommand AddConvertCommand
         {
@@ -33,7 +35,7 @@ namespace FfmpegLauncher
                 if (_AddConvertCommand == null)
                     _AddConvertCommand = new RelayCommand(x =>
                     {
-                        var task = new ConvertTask();
+                        var task = new ConvertTask(OutputFolders);
                         SetTaskDefault(task);
                         Tasks.Add(task);
                     });
@@ -49,7 +51,7 @@ namespace FfmpegLauncher
                 if (_AddMergeCommand == null)
                     _AddMergeCommand = new RelayCommand(x =>
                     {
-                        var task = new MergeTask();
+                        var task = new MergeTask(OutputFolders);
                         SetTaskDefault(task);
                         Tasks.Add(task);
                     });
@@ -67,8 +69,7 @@ namespace FfmpegLauncher
                     {
                         if (SelectedTask != null)
                         {
-                            SelectedTask.AddLog += Task_AddLog;
-                            Tasks.Remove(SelectedTask);
+                            RemoveTask(SelectedTask);
                             SelectedTask = null;
                         }
                     }, x =>
@@ -76,6 +77,55 @@ namespace FfmpegLauncher
                         return SelectedTask != null;
                     });
                 return _RemoveTaskCommand;
+            }
+        }
+
+        private void RemoveTask(TaskBase task)
+        {
+            if (task == null)
+                return;
+            task.AddLog -= Task_AddLog;
+            Tasks.Remove(task);
+        }
+
+        private ICommand _RemoveAllCommand;
+        public ICommand RemoveAllCommand
+        {
+            get
+            {
+                if (_RemoveAllCommand == null)
+                    _RemoveAllCommand = new RelayCommand(x =>
+                    {
+                        foreach(var task in Tasks.ToArray())
+                        {
+                            RemoveTask(task);
+                        }
+                    }, x =>
+                    {
+                        return Tasks.Any();
+                    });
+                return _RemoveAllCommand;
+            }
+        }
+
+        private ICommand _ApplyToAllCommand;
+        public ICommand ApplyToAllCommand
+        {
+            get
+            {
+                if (_ApplyToAllCommand == null)
+                    _ApplyToAllCommand = new RelayCommand(x =>
+                    {
+                        foreach (var task in Tasks)
+                        {
+                            task.BitRate = DefaultBitRate;
+                            task.MaxBitRate = DefaultMaxBitRate;
+                        }
+                    }, x =>
+                    {
+                        return Tasks.Any();
+                    });
+                return _ApplyToAllCommand;
             }
         }
 
@@ -214,8 +264,27 @@ namespace FfmpegLauncher
                     }
                 }
             }
-            if (direction == PersistDirection.Save)
-                Settings.Default.Save();
+            switch(direction)
+            {
+                case PersistDirection.Load:
+                    var outputHistory = Settings.Default.OutputHistory;
+                    if(outputHistory != null)
+                    {
+                        foreach(var output in outputHistory)
+                        {
+                            OutputFolders.Add(output);
+                        }
+                    }
+                    break;
+                case PersistDirection.Save:
+                    Settings.Default.OutputHistory = new System.Collections.Specialized.StringCollection();
+                    foreach(var output in OutputFolders)
+                    {
+                        Settings.Default.OutputHistory.Add(output);
+                    }
+                    Settings.Default.Save();
+                    break;
+            }
         }
 
         public void SaveSetting()

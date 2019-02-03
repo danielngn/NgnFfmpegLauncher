@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace FfmpegLauncher.Models
 {
     public class ConvertTask : TaskBase
     {
+        public ConvertTask(ObservableCollection<string> outputFolders) : base(outputFolders) { }
+
         private string _InputFileName;
         public string InputFileName
         {
