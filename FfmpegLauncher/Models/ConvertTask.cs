@@ -51,5 +51,10 @@ namespace FfmpegLauncher.Models
         {
             return !string.IsNullOrEmpty(InputFileName);
         }
+
+        protected override void DeleteSource()
+        {
+            DeleteFile(InputFileName);
+        }
     }
 }

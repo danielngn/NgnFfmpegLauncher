@@ -32,6 +32,18 @@ namespace FfmpegLauncher.Models
 
         public bool UseHardwareEncode { get; set; }
         public bool UseHardwareDecode { get; set; }
+        public bool ShouldDeleteSource { get; set; }
+
+        private bool _isSettingEnabled = true;
+        public bool IsSettingEnabled
+        {
+            get => _isSettingEnabled;
+            set
+            {
+                _isSettingEnabled = value;
+                NotifyPropertyChanged(nameof(IsSettingEnabled));
+            }
+        }
 
         private string _outputFileName;
         public string OutputFileName
@@ -45,7 +57,8 @@ namespace FfmpegLauncher.Models
         }
 
         private int _bitRate;
-        public int BitRate {
+        public int BitRate
+        {
             get => _bitRate;
             set
             {
@@ -121,6 +134,7 @@ namespace FfmpegLauncher.Models
         {
             StartTime = DateTime.Now;
             SetStatus(TaskStatus.Validating);
+            IsSettingEnabled = false;
             await Task.Factory.StartNew(() =>
             {
                 if (!File.Exists(FfmpegExec))
@@ -155,7 +169,12 @@ namespace FfmpegLauncher.Models
                     return;
                 }
                 DoRun();
+                if(ShouldDeleteSource)
+                {
+                    DeleteSource();
+                }
             });
+            IsSettingEnabled = true;
         }
 
         private bool CanRunTask()
@@ -172,6 +191,24 @@ namespace FfmpegLauncher.Models
         protected virtual void DoRun()
         {
 
+        }
+
+        protected virtual void DeleteSource()
+        {
+
+        }
+
+        protected void DeleteFile(string fileName)
+        {
+            try
+            {
+                File.Delete(fileName);
+                LogInfo($"Deleted source file: {fileName}");
+            }
+            catch (Exception ex)
+            {
+                LogError($"Failure when deleting source file: {fileName}, {ex.ToString()}");
+            }
         }
 
         private ICommand _BrowseOutputCommand;

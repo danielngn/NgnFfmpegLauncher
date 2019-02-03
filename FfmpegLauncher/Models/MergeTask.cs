@@ -100,5 +100,13 @@ namespace FfmpegLauncher.Models
             }
             RunConvert(concatFile);
         }
+
+        protected override void DeleteSource()
+        {
+            foreach(var file in FilesToMerge)
+            {
+                DeleteFile(file);
+            }
+        }
     }
 }
