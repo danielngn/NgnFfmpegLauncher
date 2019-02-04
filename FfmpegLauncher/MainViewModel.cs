@@ -15,6 +15,7 @@ namespace FfmpegLauncher
     {
         private readonly object _tasksLock = new object();
         private Dispatcher _uiDispatcher;
+        private bool _isRunning;
 
         public MainViewModel()
         {
@@ -74,7 +75,7 @@ namespace FfmpegLauncher
                         }
                     }, x =>
                     {
-                        return SelectedTask != null;
+                        return SelectedTask != null && !_isRunning;
                     });
                 return _RemoveTaskCommand;
             }
@@ -102,7 +103,7 @@ namespace FfmpegLauncher
                         }
                     }, x =>
                     {
-                        return Tasks.Any();
+                        return Tasks.Any() && !_isRunning;
                     });
                 return _RemoveAllCommand;
             }
@@ -145,10 +146,12 @@ namespace FfmpegLauncher
 
         private async void RunAll()
         {
+            _isRunning = true;
             foreach (var task in Tasks)
             {
                 await task.RunTask();
             }
+            _isRunning = false;
         }
 
         private TaskBase _selectedTask;

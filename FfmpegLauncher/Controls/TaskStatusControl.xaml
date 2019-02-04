@@ -14,7 +14,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding Path=Status}" HorizontalAlignment="Center"/>
-            <Button Grid.Row="1" Content="Run" Margin="0,5,0,0" Padding="10,2" HorizontalAlignment="Center" Command="{Binding Path=RunCommand}"/>
+            <Button Grid.Row="1" Content="{Binding Path=ButtonCaption}" Margin="0,5,0,0" Padding="10,2" HorizontalAlignment="Center" Command="{Binding Path=RunCommand}"/>
             <TextBlock Text="{Binding Path=StatusMessage}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
         </Grid>
     </Border>

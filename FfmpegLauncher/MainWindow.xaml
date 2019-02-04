@@ -45,10 +45,15 @@
         <ListBox Grid.Row="2" Margin="5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                  SelectedItem="{Binding Path=SelectedTask}"/>
-        <DataGrid Grid.Row="3" Height="80" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VerticalScrollBarVisibility="Auto">
+        <DataGrid Grid.Row="3" Height="100" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VerticalScrollBarVisibility="Auto">
+            <DataGrid.Resources>
+                <Style x:Key="wrap" TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Category" Width="Auto" Binding="{Binding Path=Category}"/>
-                <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Path=Message}"/>
+                <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Path=Message}" ElementStyle="{StaticResource wrap}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

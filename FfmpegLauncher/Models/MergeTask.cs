@@ -61,6 +61,7 @@ namespace FfmpegLauncher.Models
 
         protected override void DoRun()
         {
+            SetStatus(TaskStatus.Validating);
             bool hasError = false;
             string ext = null;
             foreach (var file in FilesToMerge)
@@ -84,13 +85,16 @@ namespace FfmpegLauncher.Models
             }
             if (hasError)
                 return;
-            UiDispatcher.Invoke(new Action(() => Status = TaskStatus.Merging));
+
+            SetStatus(TaskStatus.Merging);
             var listFile = Path.GetTempFileName();
             var tempFileInfo = new FileInfo(Path.GetTempFileName());
             var concatFile = tempFileInfo.FullName.Replace(tempFileInfo.Extension, ext);
             File.WriteAllLines(listFile, FilesToMerge.Select(x => $"file \'{x}\'").ToArray());
             var mergeArg = $"-f concat -safe 0 -i \"{listFile}\" -c copy \"{concatFile}\"";
             LogInfo($"Task {TaskName} merge with arg:{mergeArg}");
+            if (_isCancelling)
+                return;
             var exitCode = RunFfmpeg(mergeArg);
             if (exitCode != 0)
             {
@@ -98,6 +102,8 @@ namespace FfmpegLauncher.Models
                 LogError($"Task {TaskName} merge failed ({exitCode}), abort.");
                 return;
             }
+            if (_isCancelling)
+                return;
             RunConvert(concatFile);
         }
 

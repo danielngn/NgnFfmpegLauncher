@@ -13,6 +13,10 @@ namespace FfmpegLauncher.Models
 {
     public class TaskBase : NotifiableBase
     {
+        private bool _isRunning;
+        private Process _externalProcess;
+        protected bool _isCancelling;
+
         public TaskBase()
         {
 
@@ -120,8 +124,22 @@ namespace FfmpegLauncher.Models
             get
             {
                 if (_RunCommand == null)
-                    _RunCommand = new RelayCommand(x => RunTask(), x => CanRunTask());
+                    _RunCommand = new RelayCommand(x => OnRunCommand(), x => (!_isRunning && CanRunTask()) || _isRunning);
                 return _RunCommand;
+            }
+        }
+
+        private const string CaptionRun = "Run";
+        private const string CaptionCancel = "Cancel";
+
+        private string _runCaption = CaptionRun;
+        public string ButtonCaption
+        {
+            get => _runCaption;
+            set
+            {
+                _runCaption = value;
+                NotifyPropertyChanged(nameof(ButtonCaption));
             }
         }
 
@@ -130,51 +148,95 @@ namespace FfmpegLauncher.Models
             UiDispatcher.Invoke(new Action(() => Status = status));
         }
 
+        private void OnRunCommand()
+        {
+            if (_isRunning)
+            {
+                try
+                {
+                    _isCancelling = true;
+                    LogInfo($"Cancel task {TaskName}");
+                    try
+                    {
+                        if (_externalProcess != null)
+                        {
+                            _externalProcess.Kill();
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    _isCancelling = false;
+                }
+                finally
+                {
+                    TaskFinished();
+                }
+            }
+            else
+            {
+                RunTask();
+            }
+        }
+
         public async Task RunTask()
         {
             StartTime = DateTime.Now;
-            SetStatus(TaskStatus.Validating);
             IsSettingEnabled = false;
-            await Task.Factory.StartNew(() =>
+            _isRunning = true;
+            ButtonCaption = CaptionCancel;
+            try
             {
-                if (!File.Exists(FfmpegExec))
+                await Task.Factory.StartNew(() =>
                 {
-                    LogError($"Can't file ffmpeg executable: {FfmpegExec}, abort.");
-                    return;
-                }
-                if (BitRate <= 0)
-                {
-                    LogError($"Invalid bitrate: {BitRate}, abort.");
-                    return;
-                }
-                if (MaxBitRate < BitRate)
-                {
-                    MaxBitRate = BitRate;
-                }
-                var fi = new FileInfo(OutputFileName);
-                TaskName = fi.Name;
-                LogInfo($"Task {TaskName} starting...");
-                try
-                {
-                    if (fi.Exists)
+                    if (!File.Exists(FfmpegExec))
                     {
-                        LogInfo($"Output file {OutputFileName} already exist, deleting...");
-                        fi.Delete();
-                        LogInfo($"Deleted file {OutputFileName}.");
+                        LogError($"Can't find ffmpeg executable: {FfmpegExec}, abort.");
+                        return;
                     }
-                }
-                catch (Exception ex)
-                {
-                    LogError($"Failed to delete file {OutputFileName}, abort task. {ex.ToString()}");
-                    return;
-                }
-                DoRun();
-                if(ShouldDeleteSource)
-                {
-                    DeleteSource();
-                }
-            });
+                    if (BitRate <= 0)
+                    {
+                        LogError($"Invalid bitrate: {BitRate}, abort.");
+                        return;
+                    }
+                    if (MaxBitRate < BitRate)
+                    {
+                        MaxBitRate = BitRate;
+                    }
+                    var fi = new FileInfo(OutputFileName);
+                    TaskName = fi.Name;
+                    LogInfo($"Task {TaskName} starting...");
+                    try
+                    {
+                        if (fi.Exists)
+                        {
+                            LogInfo($"Output file {OutputFileName} already exist, deleting...");
+                            fi.Delete();
+                            LogInfo($"Deleted file {OutputFileName}.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"Failed to delete file {OutputFileName}, abort task. {ex.ToString()}");
+                        return;
+                    }
+                    DoRun();
+                    if (Status == TaskStatus.Succeeded && ShouldDeleteSource)
+                    {
+                        DeleteSource();
+                    }
+                });
+            }
+            finally
+            {
+                TaskFinished();
+            }
+        }
+
+        private void TaskFinished()
+        {
             IsSettingEnabled = true;
+            ButtonCaption = CaptionRun;
+            _isRunning = false;
         }
 
         private bool CanRunTask()
@@ -316,9 +378,11 @@ namespace FfmpegLauncher.Models
         protected int RunFfmpeg(string arg)
         {
             var psi = new ProcessStartInfo(FfmpegExec, arg) { WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = true, UseShellExecute = false };
-            var proc = Process.Start(psi);
-            proc.WaitForExit(60 * 60 * 1000);
-            return proc.ExitCode;
+            _externalProcess = Process.Start(psi);
+            _externalProcess.WaitForExit(60 * 60 * 1000);
+            var result = _externalProcess.ExitCode;
+            _externalProcess = null;
+            return result;
         }
 
         public ObservableCollection<string> OutputFolders { get; }
