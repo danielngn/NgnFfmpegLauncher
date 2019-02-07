@@ -15,18 +15,18 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Input:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Path=InputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
-                    <Button Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseInputCommand}" VerticalAlignment="Stretch"/>
-                    <TextBlock Grid.Row="1" Text="Output:" VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=OutputFolders}" IsEditable="True" Text="{Binding Path=OutputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
-                    <Button Grid.Row="1" Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseOutputCommand}" VerticalAlignment="Stretch"/>
-                    <contrtols:TaskSettingControl Grid.Row="2" Grid.ColumnSpan="3" Margin="0,5,0,0"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Input:" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding Path=InputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
+                        <Button Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseInputCommand}" VerticalAlignment="Stretch"/>
+                    </Grid>
+                    <contrtols:OutputFolder Grid.Row="1" Margin="0,5,0,0"/>
+                    <contrtols:TaskSettingControl Grid.Row="2" Margin="0,5,0,0"/>
                 </Grid>
                 <contrtols:TaskStatusControl Grid.Column="1" Margin="5,0,0,0"/>
             </Grid>
@@ -45,24 +45,16 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Button Content="Add File" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=AddFileCommand}"/>
-                        <Button Content="Remove File" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=RemoveFileCommand}"/>
-                        <contrtols:TaskSettingControl Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,5,0"/>
+                        <Button Content="Add Files" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=AddFileCommand}"/>
+                        <Button Content="Remove Files" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=RemoveFileCommand}"/>
                     </StackPanel>
                     <ListBox Grid.Row="1" Margin="0,5,0,0" MinHeight="40"
                              ItemsSource="{Binding Path=FilesToMerge}" SelectedItem="{Binding Path=SelectedFile}"/>
-                    <Grid Grid.Row="2" Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Output:" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding Path=OutputFolders}" IsEditable="True" Text="{Binding Path=OutputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
-                        <Button  Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseOutputCommand}" VerticalAlignment="Stretch"/>
-                    </Grid>
+                    <contrtols:OutputFolder Grid.Row="2" Margin="0,5,0,0"/>
+                    <contrtols:TaskSettingControl Grid.Row="3" Margin="0,5,0,0"/>
                 </Grid>
                 <contrtols:TaskStatusControl Grid.Column="1" Margin="5,0,0,0"/>
             </Grid>

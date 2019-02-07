@@ -24,6 +24,8 @@ namespace FfmpegLauncher.Models
                     _AddFileCommand = new RelayCommand(x =>
                     {
                         var filenames = BrowseInput(true);
+                        if (filenames == null)
+                            return;
                         foreach (var filename in filenames)
                         {
                             if (!string.IsNullOrEmpty(filename))

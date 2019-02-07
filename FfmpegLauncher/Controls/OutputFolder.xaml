@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="FfmpegLauncher.Controls.OutputFolder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FfmpegLauncher.Controls"
+             mc:Ignorable="d" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Output:" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" ItemsSource="{Binding Path=OutputFolders}" IsEditable="True" Text="{Binding Path=OutputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
+        <Button Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseOutputCommand}" VerticalAlignment="Stretch"/>
+        <Button Grid.Column="3" Content="Open" Padding="3,2,8,2" Command="{Binding Path=OpenOutputCommand}" VerticalAlignment="Stretch"/>
+    </Grid>
+</UserControl>

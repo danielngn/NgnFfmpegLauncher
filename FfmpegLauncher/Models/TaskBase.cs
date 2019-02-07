@@ -310,6 +310,25 @@ namespace FfmpegLauncher.Models
             }
         }
 
+        private ICommand _OpenOutputCommand;
+        public ICommand OpenOutputCommand
+        {
+            get
+            {
+                if (_OpenOutputCommand == null)
+                    _OpenOutputCommand = new RelayCommand(x => OpenOutput());
+                return _OpenOutputCommand;
+            }
+        }
+
+        private void OpenOutput()
+        {
+            if (File.Exists(OutputFileName))
+            {
+                Process.Start(OutputFileName);
+            }
+        }
+
         protected string[] BrowseInput(bool isMultiFile)
         {
             var dialog = new Winform.OpenFileDialog()

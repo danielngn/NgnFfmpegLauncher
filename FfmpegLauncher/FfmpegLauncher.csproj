@@ -59,6 +59,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\OutputFolder.xaml.cs">
+      <DependentUpon>OutputFolder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\ConvertTask.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\MergeTask.cs" />
@@ -72,6 +75,10 @@
     <Compile Include="Controls\TaskStatusControl.xaml.cs">
       <DependentUpon>TaskStatusControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\OutputFolder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
