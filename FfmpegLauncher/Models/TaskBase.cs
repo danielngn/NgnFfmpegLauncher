@@ -323,9 +323,22 @@ namespace FfmpegLauncher.Models
 
         private void OpenOutput()
         {
-            if (File.Exists(OutputFileName))
+            var fi = new FileInfo(OutputFileName);
+            if (fi.Exists)
             {
                 Process.Start(OutputFileName);
+            }
+            else
+            {
+                var dir = new DirectoryInfo(OutputFileName);
+                if(dir.Exists)
+                {
+                    Process.Start(OutputFileName);
+                }
+                else if (fi.Directory.Exists)
+                {
+                    Process.Start(fi.Directory.FullName);
+                }
             }
         }
 
