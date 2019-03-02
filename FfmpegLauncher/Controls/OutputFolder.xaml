@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FfmpegLauncher.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -13,8 +14,14 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Output:" VerticalAlignment="Center"/>
-        <ComboBox Grid.Column="1" ItemsSource="{Binding Path=OutputFolders}" IsEditable="True" Text="{Binding Path=OutputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
-        <Button Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseOutputCommand}" VerticalAlignment="Stretch"/>
-        <Button Grid.Column="3" Content="Open" Padding="3,2,8,2" Command="{Binding Path=OpenOutputCommand}" VerticalAlignment="Stretch"/>
+        <ComboBox Grid.Column="1" ItemsSource="{Binding Path=OutputFolders}" IsEditable="True" Text="{Binding Path=OutputFileName, Mode=TwoWay}" Margin="5,0,10,0"/>
+        <Button Grid.Column="2" Padding="5,2" Command="{Binding Path=BrowseOutputCommand}" VerticalAlignment="Stretch" Margin="2,0">
+            <materialDesign:PackIcon Kind="FolderSearch" />
+        </Button>
+        <Button Grid.Column="3" Padding="5,2" Command="{Binding Path=OpenOutputCommand}" VerticalAlignment="Stretch">
+            <Button.Content>
+                <materialDesign:PackIcon Kind="FolderOpen" />
+            </Button.Content>
+        </Button>
     </Grid>
 </UserControl>

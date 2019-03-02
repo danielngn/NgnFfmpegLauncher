@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FfmpegLauncher"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="FFMPEG Launcher" Height="550" Width="800" Style="{StaticResource {x:Type Window}}"
+        Title="FFMPEG Launcher" Height="700" Width="800" Style="{StaticResource {x:Type Window}}"
         d:DataContext="{d:DesignInstance local:MainViewModel, IsDesignTimeCreatable=True}" 
         Closing="Window_Closing" DataContextChanged="Window_DataContextChanged">
     <Window.DataContext>
@@ -26,12 +27,43 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" Margin="5">
-            <Button Content="Add Convert Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddConvertCommand}"/>
-            <Button Content="Add Merge Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddMergeCommand}"/>
-            <Button Content="Remove Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveTaskCommand}"/>
-            <Button Content="Remove All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveAllCommand}"/>
-            <Button Content="Run All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RunAllCommand}"/>
+            <Button ToolTip="Add Convert Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddConvertCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CirclesAdd" VerticalAlignment="Center"/>
+                        <TextBlock Text="Convert Task" Margin="5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Add Merge Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=AddMergeCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CirclesAdd" VerticalAlignment="Center"/>
+                        <TextBlock Text="Merge Task" Margin="5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Remove Task" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveTaskCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="MinusCircleOutline" VerticalAlignment="Center"/>
+                        <TextBlock Text="Task" Margin="5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Remove All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=RemoveAllCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AnimationMinusOutline" VerticalAlignment="Center"/>
+                        <TextBlock Text="All Task" Margin="5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0">
             <TextBlock Text="FFMPEG Folder:" Margin="0,0,5,0" VerticalAlignment="Center"/>
@@ -40,12 +72,20 @@
             <TextBox Text="{Binding Path=DefaultBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
             <TextBlock Text="Max Bit Rate:" Margin="0,0,5,0" VerticalAlignment="Center"/>
             <TextBox Text="{Binding Path=DefaultMaxBitRate, UpdateSourceTrigger=PropertyChanged}" MinWidth="30" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
-            <Button Content="Apply to All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=ApplyToAllCommand}"/>
         </StackPanel>
-        <ListBox Grid.Row="2" Margin="5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
+        <Button Grid.Row="0" Grid.Column="1" ToolTip="Run All" Padding="11,3" Margin="0,0,10,0" Command="{Binding Path=RunAllCommand}" HorizontalAlignment="Left" Background="{DynamicResource PrimaryHueDarkBrush}">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="AnimationPlayOutline" VerticalAlignment="Center"/>
+                    <TextBlock Text="Run All" Margin="5,0"/>
+                </StackPanel>
+            </Button.Content>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="1" Content="Apply to All" Padding="10,3" Margin="0,0,10,0" Command="{Binding Path=ApplyToAllCommand}" HorizontalAlignment="Left"/>
+        <ListBox Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5" ItemsSource="{Binding Path=Tasks}" ItemTemplateSelector="{StaticResource TaskDataTemplateSelector}" 
                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                  SelectedItem="{Binding Path=SelectedTask}"/>
-        <DataGrid Grid.Row="3" Height="120" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VerticalScrollBarVisibility="Auto">
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="2" Height="120" Margin="5,0,5,5" ItemsSource="{Binding Path=Logs}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VerticalScrollBarVisibility="Auto">
             <DataGrid.Resources>
                 <Style x:Key="wrap" TargetType="TextBlock">
                     <Setter Property="TextWrapping" Value="Wrap" />

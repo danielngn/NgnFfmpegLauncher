@@ -1,9 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:contrtols="clr-namespace:FfmpegLauncher.Controls">
-
+                    xmlns:contrtols="clr-namespace:FfmpegLauncher.Controls"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <DataTemplate x:Key="convertTaskTemplate">
-        <GroupBox Header="Convert Task" Padding="0,5,0,0">
+        <GroupBox Padding="5">
+            <GroupBox.Header>
+                <materialDesign:Chip Content="Convert Task" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Icon="C" IconBackground="{DynamicResource PrimaryHueLightBrush}" IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
+            </GroupBox.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -22,8 +25,12 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Input:" VerticalAlignment="Center"/>
-                        <TextBox Grid.Column="1" Text="{Binding Path=InputFileName, Mode=TwoWay}" Margin="5,0,0,0"/>
-                        <Button Grid.Column="2" Content="..." Padding="3,2,8,2" Command="{Binding Path=BrowseInputCommand}" VerticalAlignment="Stretch"/>
+                        <TextBox Grid.Column="1" Text="{Binding Path=InputFileName, Mode=TwoWay}" Margin="5,0,10,0"/>
+                        <Button Grid.Column="2" Padding="3,2,8,2" Command="{Binding Path=BrowseInputCommand}" VerticalAlignment="Stretch">
+                            <Button.Content>
+                                <materialDesign:PackIcon Kind="FolderSearch" />
+                            </Button.Content>
+                        </Button>
                     </Grid>
                     <contrtols:OutputFolder Grid.Row="1" Margin="0,5,0,0"/>
                     <contrtols:TaskSettingControl Grid.Row="2" Margin="0,5,0,0"/>
@@ -34,7 +41,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="mergeTaskTemplate">
-        <GroupBox Header="Merge Task" Padding="0,5,0,0">
+        <GroupBox Padding="5">
+            <GroupBox.Header>
+                <materialDesign:Chip Content="Merge Task" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Icon="M" IconBackground="{DynamicResource PrimaryHueLightBrush}" IconForeground="{DynamicResource PrimaryHueLightForegroundBrush}" />
+            </GroupBox.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -48,8 +58,12 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Button Content="Add Files" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=AddFileCommand}"/>
-                        <Button Content="Remove Files" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=RemoveFileCommand}"/>
+                        <Button ToolTip="Add Files" Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=AddFileCommand}">
+                            <materialDesign:PackIcon Kind="PlaylistAdd" />
+                        </Button>
+                        <Button Padding="10,2" Margin="0,0,5,0" Command="{Binding Path=RemoveFileCommand}" ToolTip="Remove Files">
+                            <materialDesign:PackIcon Kind="DeleteSweep" />
+                        </Button>
                     </StackPanel>
                     <ListBox Grid.Row="1" Margin="0,5,0,0" MinHeight="40"
                              ItemsSource="{Binding Path=FilesToMerge}" SelectedItem="{Binding Path=SelectedFile}"/>

@@ -7,6 +7,19 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance models:TaskBase, IsDesignTimeCreatable=True}">
     <StackPanel Orientation="Horizontal">
+        <StackPanel.Resources>
+            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                <Style.Resources>
+                    <Style TargetType="ContentPresenter" >
+                        <Style.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="0,-4,0,0"/>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </StackPanel.Resources>
         <StackPanel Orientation="Horizontal" IsEnabled="{Binding Path=IsSettingEnabled}">
             <TextBlock Text="Bit Rate:" Width="50" Margin="0" VerticalAlignment="Center"/>
             <TextBox Text="{Binding Path=BitRate}" MinWidth="30" Margin="5,0,10,0" HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
